@@ -10,6 +10,7 @@ namespace QLKhachSan.Models
         public Booking Booking { get; set; }
         public string PaymentStatus { get; set; }
         public double TotalPrice { get; set; }
+        public string StripePaymentIntentID { get; set; }
         public string PaymentMethod { get; set; }
         public string PaymentDate { get; set; }
     }

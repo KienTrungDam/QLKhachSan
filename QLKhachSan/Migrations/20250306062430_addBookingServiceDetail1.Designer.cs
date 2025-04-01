@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QLKhachSan.Data;
 
@@ -11,9 +12,11 @@ using QLKhachSan.Data;
 namespace QLKhachSan.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250306062430_addBookingServiceDetail1")]
+    partial class addBookingServiceDetail1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -263,36 +266,6 @@ namespace QLKhachSan.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CategoryRooms");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Capacity = 50.0,
-                            Description = "Phòng đơn",
-                            Name = "Phòng đơn"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Capacity = 70.0,
-                            Description = "Phòng đơn",
-                            Name = "Phòng đôi"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Capacity = 80.0,
-                            Description = "Phòng đơn",
-                            Name = "Phòng Vip"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Capacity = 100.0,
-                            Description = "Phòng đơn",
-                            Name = "Phòng SUpperVip"
-                        });
                 });
 
             modelBuilder.Entity("QLKhachSan.Models.Payment", b =>
@@ -351,6 +324,9 @@ namespace QLKhachSan.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -441,40 +417,6 @@ namespace QLKhachSan.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Resorts");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Address = "123",
-                            Name = "Resort 1",
-                            PhoneNumber = "123",
-                            Rate = 5
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Address = "123",
-                            Name = "Resort 2",
-                            PhoneNumber = "123",
-                            Rate = 4
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Address = "123",
-                            Name = "Resort 3",
-                            PhoneNumber = "123",
-                            Rate = 2
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Address = "123",
-                            Name = "Resort 4",
-                            PhoneNumber = "123",
-                            Rate = 1
-                        });
                 });
 
             modelBuilder.Entity("QLKhachSan.Models.Room", b =>
@@ -514,52 +456,6 @@ namespace QLKhachSan.Migrations
                     b.HasIndex("ResortId");
 
                     b.ToTable("Rooms");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CategoryRoomId = 1,
-                            PriceDay = 100.0,
-                            PriceHour = 10.0,
-                            PriceMonth = 2000.0,
-                            PriceWeek = 500.0,
-                            ResortId = 1,
-                            Status = "Trống"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CategoryRoomId = 2,
-                            PriceDay = 100.0,
-                            PriceHour = 10.0,
-                            PriceMonth = 2000.0,
-                            PriceWeek = 500.0,
-                            ResortId = 2,
-                            Status = "Đã thuê"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CategoryRoomId = 2,
-                            PriceDay = 100.0,
-                            PriceHour = 10.0,
-                            PriceMonth = 2000.0,
-                            PriceWeek = 500.0,
-                            ResortId = 2,
-                            Status = "Đã thuê"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CategoryRoomId = 3,
-                            PriceDay = 100.0,
-                            PriceHour = 10.0,
-                            PriceMonth = 2000.0,
-                            PriceWeek = 500.0,
-                            ResortId = 1,
-                            Status = "Trống"
-                        });
                 });
 
             modelBuilder.Entity("QLKhachSan.Models.RoomImage", b =>

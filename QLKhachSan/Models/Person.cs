@@ -13,7 +13,12 @@ namespace QLKhachSan.Models
         [StringLength(50, ErrorMessage = "First name cannot be longer than 50 characters.")]
         public string FirstMidName { get; set; }
         public string Address { get; set; }
-        public string FullName
+        //public DateTime DateOfBirth { get; set; }
+        public string CCCD { get; set; }
+        [NotMapped]
+        public string Role { get; set; }
+        [NotMapped]
+        public string? FullName
         {
             get
             {
