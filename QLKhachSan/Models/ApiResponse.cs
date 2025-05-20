@@ -2,9 +2,9 @@
 
 namespace QLKhachSan.Models
 {
-    public class ApiResponse
+    public class APIResponse
     {
-        public ApiResponse()
+        public APIResponse()
         {
             ErrorMessages = new List<string>();
         }

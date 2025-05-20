@@ -12,10 +12,13 @@ namespace QLKhachSan.Models
         public string PersonId { get; set; }
         public Person Person { get; set; }
         [ForeignKey("BookingServiceId")]
-        public int BookingServiceId { get; set; }
+        public int? BookingServiceId { get; set; }
         public BookingService BookingService { get; set; }
-        public DateTime CheckInDate { get; set; }
-        public DateTime CheckOutDate { get; set; }
+        public DateTime? CheckInDate { get; set; }
+        public DateTime? CheckOutDate { get; set; }
+        public DateTime BookingDate { get; set; }
         public double TotalPrice { get; set; }
+        public int NumberOfGuests { get; set; }
+        public string BookingStatus { get; set; } 
     }
 }

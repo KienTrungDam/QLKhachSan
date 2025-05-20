@@ -9,8 +9,8 @@ namespace QLKhachSan.Repository.IRepository
         ICategoryRoomRepository CategoryRoom { get; }
         IRoomRepository Room { get; }
         IUserManagementRepository UserManagement { get; }
-        IResortRepository Resort { get; }
         IServiceRepository Service { get; }
+        IRoomImageRepository RoomImage { get; }
         Task SaveAsync();
     }
 }

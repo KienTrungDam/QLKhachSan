@@ -22,10 +22,13 @@ namespace QLKhachSan.Repository
         public IRoomRepository Room { get; }
 
         public IUserManagementRepository UserManagement { get; }
-
-        public IResortRepository Resort { get; }
+        public IRoomImageRepository RoomImage { get; }
 
         public IServiceRepository Service { get; }
+        public IBookingRepository Booking { get; }
+        public IBookingServiceDetailRepository BookingServiceDetail { get; }
+        public IBookingServiceRepository BookingService { get; }
+        public IPaymentRepository Payment { get; }
 
         public UnitOfWork(ApplicationDbContext db, RoleManager<IdentityRole> roleManager, UserManager<Person> userManager, IConfiguration configuration, IMapper mapper)
         {
@@ -35,13 +38,16 @@ namespace QLKhachSan.Repository
             _userManager = userManager;
             _configuration = configuration;
 
-
+            BookingService = new BookingServiceRepository(_db);
+            BookingServiceDetail = new BookingServiceDetailRepository(_db);
+            Payment = new PaymentRepository(_db);
+            Booking = new BookingRepository(_db);
+            RoomImage = new RoomImageRepository(_db);
             User = new UserRepository(_db, _userManager, _roleManager, _mapper, _configuration);
             Service = new ServiceRepository(_db);
-            Resort = new ResortRepository(_db);
             Room = new RoomRepository(_db);
             CategoryRoom = new CategoryRoomRepository(_db);
-            UserManagement = new UserManagementRepository(_db;
+            UserManagement = new UserManagementRepository(_db);
 
         }
 

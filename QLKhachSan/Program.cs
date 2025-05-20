@@ -6,10 +6,10 @@ using Microsoft.IdentityModel.Tokens;
 using QLKhachSan.Data;
 using QLKhachSan.Models;
 using System.Text;
-using SkyStoreAPI.Repository.IRepository;
-using SkyStoreAPI.Repository;
 using QLKhachSan;
-using SkyStoreAPI.DbInitializer;
+using QLKhachSan.Repository.IRepository;
+using QLKhachSan.Repository;
+using QLKhachSan.DbInitializer;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddIdentity<Person, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
@@ -18,7 +18,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(option => {
 });
 // Add services to the container.
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<DbInitializer>();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
+builder.Services.AddCors();
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 //.Services.AddOpenApi();
@@ -85,6 +87,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseHttpsRedirection();
+app.UseCors(o => o.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().WithExposedHeaders("*"));
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseStaticFiles(); // add wwwroot folder

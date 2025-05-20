@@ -163,14 +163,24 @@ namespace QLKhachSan.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BookingServiceId")
+                    b.Property<DateTime>("BookingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("BookingServiceId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CheckInDate")
+                    b.Property<string>("BookingStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CheckInDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("CheckOutDate")
+                    b.Property<DateTime?>("CheckOutDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("NumberOfGuests")
+                        .HasColumnType("int");
 
                     b.Property<string>("PersonId")
                         .IsRequired()
@@ -249,9 +259,6 @@ namespace QLKhachSan.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("Capacity")
-                        .HasColumnType("float");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -268,30 +275,26 @@ namespace QLKhachSan.Migrations
                         new
                         {
                             Id = 1,
-                            Capacity = 50.0,
                             Description = "Phòng đơn",
                             Name = "Phòng đơn"
                         },
                         new
                         {
                             Id = 2,
-                            Capacity = 70.0,
                             Description = "Phòng đơn",
                             Name = "Phòng đôi"
                         },
                         new
                         {
                             Id = 3,
-                            Capacity = 80.0,
                             Description = "Phòng đơn",
                             Name = "Phòng Vip"
                         },
                         new
                         {
                             Id = 4,
-                            Capacity = 100.0,
                             Description = "Phòng đơn",
-                            Name = "Phòng SUpperVip"
+                            Name = "Phòng SupperVip"
                         });
                 });
 
@@ -415,68 +418,6 @@ namespace QLKhachSan.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("QLKhachSan.Models.Resort", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Rate")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Resorts");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Address = "123",
-                            Name = "Resort 1",
-                            PhoneNumber = "123",
-                            Rate = 5
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Address = "123",
-                            Name = "Resort 2",
-                            PhoneNumber = "123",
-                            Rate = 4
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Address = "123",
-                            Name = "Resort 3",
-                            PhoneNumber = "123",
-                            Rate = 2
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Address = "123",
-                            Name = "Resort 4",
-                            PhoneNumber = "123",
-                            Rate = 1
-                        });
-                });
-
             modelBuilder.Entity("QLKhachSan.Models.Room", b =>
                 {
                     b.Property<int>("Id")
@@ -488,78 +429,43 @@ namespace QLKhachSan.Migrations
                     b.Property<int>("CategoryRoomId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Floor")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaxOccupancy")
+                        .HasColumnType("int");
+
                     b.Property<double>("PriceDay")
-                        .HasColumnType("float");
-
-                    b.Property<double>("PriceHour")
-                        .HasColumnType("float");
-
-                    b.Property<double>("PriceMonth")
                         .HasColumnType("float");
 
                     b.Property<double>("PriceWeek")
                         .HasColumnType("float");
 
-                    b.Property<int>("ResortId")
+                    b.Property<int>("RoomNumber")
                         .HasColumnType("int");
+
+                    b.Property<double>("RoomSize")
+                        .HasColumnType("float");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryRoomId");
 
-                    b.HasIndex("ResortId");
-
                     b.ToTable("Rooms");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CategoryRoomId = 1,
-                            PriceDay = 100.0,
-                            PriceHour = 10.0,
-                            PriceMonth = 2000.0,
-                            PriceWeek = 500.0,
-                            ResortId = 1,
-                            Status = "Trống"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CategoryRoomId = 2,
-                            PriceDay = 100.0,
-                            PriceHour = 10.0,
-                            PriceMonth = 2000.0,
-                            PriceWeek = 500.0,
-                            ResortId = 2,
-                            Status = "Đã thuê"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CategoryRoomId = 2,
-                            PriceDay = 100.0,
-                            PriceHour = 10.0,
-                            PriceMonth = 2000.0,
-                            PriceWeek = 500.0,
-                            ResortId = 2,
-                            Status = "Đã thuê"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CategoryRoomId = 3,
-                            PriceDay = 100.0,
-                            PriceHour = 10.0,
-                            PriceMonth = 2000.0,
-                            PriceWeek = 500.0,
-                            ResortId = 1,
-                            Status = "Trống"
-                        });
                 });
 
             modelBuilder.Entity("QLKhachSan.Models.RoomImage", b =>
@@ -573,6 +479,9 @@ namespace QLKhachSan.Migrations
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("bit");
 
                     b.Property<int>("RoomId")
                         .HasColumnType("int");
@@ -592,7 +501,7 @@ namespace QLKhachSan.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Discription")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -663,9 +572,7 @@ namespace QLKhachSan.Migrations
                 {
                     b.HasOne("QLKhachSan.Models.BookingService", "BookingService")
                         .WithMany()
-                        .HasForeignKey("BookingServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BookingServiceId");
 
                     b.HasOne("QLKhachSan.Models.Person", "Person")
                         .WithMany()
@@ -724,26 +631,23 @@ namespace QLKhachSan.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("QLKhachSan.Models.Resort", "Resort")
-                        .WithMany()
-                        .HasForeignKey("ResortId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("CategoryRoom");
-
-                    b.Navigation("Resort");
                 });
 
             modelBuilder.Entity("QLKhachSan.Models.RoomImage", b =>
                 {
                     b.HasOne("QLKhachSan.Models.Room", "Room")
-                        .WithMany()
+                        .WithMany("RoomImages")
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Room");
+                });
+
+            modelBuilder.Entity("QLKhachSan.Models.Room", b =>
+                {
+                    b.Navigation("RoomImages");
                 });
 #pragma warning restore 612, 618
         }

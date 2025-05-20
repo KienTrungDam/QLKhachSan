@@ -11,6 +11,23 @@ namespace QLKhachSan
             CreateMap<Person, PersonDTO>().ReverseMap();
             CreateMap<PersonDTO, Person>().ReverseMap();
 
+            CreateMap<Service, ServiceDTO>().ReverseMap();
+            CreateMap<Service, ServiceCreateDTO>().ReverseMap();
+            CreateMap<Service, ServiceUpdateDTO>().ReverseMap();
+            CreateMap<RoomImage, RoomImageDTO>();
+            CreateMap<Room, RoomDTO>().ReverseMap();
+            //.ForMember(dest => dest.CategoryRoomId, opt => opt.MapFrom(src => src.CategoryRoom.Name));
+            CreateMap<Room, RoomCreateDTO>().ReverseMap();
+            CreateMap<Room, RoomUpdateDTO>().ReverseMap();
+
+            //CreateMap<Resort, ResortDTO>().ReverseMap();
+            //CreateMap<Resort, ResortCreateDTO>().ReverseMap();
+            //CreateMap<Resort, ResortUpdateDTO>().ReverseMap();
+
+            CreateMap<CategoryRoom, CategoryRoomDTO>().ReverseMap();
+            CreateMap<CategoryRoom, CategoryRoomCreateDTO>().ReverseMap();
+            CreateMap<CategoryRoom, CategoryRoomUpdateDTO>().ReverseMap();
+
         }
     }
 }

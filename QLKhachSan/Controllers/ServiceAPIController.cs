@@ -2,12 +2,15 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QLKhachSan.Models;
+using QLKhachSan.Models.DTO;
+using QLKhachSan.Repository.IRepository;
 using QLKhachSan.Utility;
-using SkyStoreAPI.Repository.IRepository;
 using System.Net;
 
 namespace QLKhachSan.Controllers
 {
+    [Route("api/Service")]
+    [ApiController]
     public class ServiceAPIController : ControllerBase
     {
         protected APIResponse _response;
@@ -23,19 +26,19 @@ namespace QLKhachSan.Controllers
         [HttpGet]
         //[Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<APIResponse>> GetCategories()
+        public async Task<ActionResult<APIResponse>> GetServices()
         {
-            IEnumerable<Category> categories = await _unitOfWork.Category.GetAllAsync();
+            IEnumerable<Service> services = await _unitOfWork.Service.GetAllAsync();
             _response.StatusCode = HttpStatusCode.OK;
-            _response.Result = _mapper.Map<IEnumerable<CategoryDTO>>(categories);
+            _response.Result = _mapper.Map<IEnumerable<ServiceDTO>>(services);
             return Ok(_response);
         }
-        [HttpGet("{id:int}", Name = "GetCategory")]
+        [HttpGet("{id:int}", Name = "GetService")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         //[Authorize(Roles = SD.Role_Customer)]
-        public async Task<ActionResult<APIResponse>> GetCategory(int id)
+        public async Task<ActionResult<APIResponse>> GetService(int id)
         {
             if (id == 0)
             {
@@ -44,8 +47,8 @@ namespace QLKhachSan.Controllers
                 _response.ErrorMessages.Add("Invalid Category ID");
                 return BadRequest(_response);
             }
-            Category category = await _unitOfWork.Category.GetAsync(u => u.Id == id);
-            if (category == null)
+            Service service = await _unitOfWork.Service.GetAsync(u => u.Id == id);
+            if (service == null)
             {
                 _response.StatusCode = HttpStatusCode.NotFound;
                 _response.IsSuccess = false;
@@ -53,17 +56,17 @@ namespace QLKhachSan.Controllers
                 return NotFound(_response);
             }
             _response.StatusCode = HttpStatusCode.OK;
-            _response.Result = _mapper.Map<CategoryDTO>(category);
+            _response.Result = _mapper.Map<ServiceDTO>(service);
             return Ok(_response);
         }
         [HttpPost]
-        [Authorize(Roles = SD.Role_Admin)]
+        //[Authorize(Roles = SD.Role_Admin)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> CreateCategory([FromForm] CategoryCreateDTO categoryCreateDTO)
+        public async Task<ActionResult<APIResponse>> CreateService([FromForm] ServiceCreateDTO serviceCreateDTO)
         {
-            var temp = await _unitOfWork.Category.GetAsync(u => u.Name == categoryCreateDTO.Name);
+            var temp = await _unitOfWork.Service.GetAsync(u => u.Name == serviceCreateDTO.Name);
             if (temp != null)
             {
                 _response.StatusCode = HttpStatusCode.NotFound;
@@ -71,45 +74,45 @@ namespace QLKhachSan.Controllers
                 _response.ErrorMessages.Add("Name is already exist");
                 return BadRequest(_response);
             }
-            if (categoryCreateDTO == null)
+            if (serviceCreateDTO == null)
             {
                 _response.StatusCode = HttpStatusCode.NotFound;
                 _response.IsSuccess = false;
                 _response.ErrorMessages.Add("Not Found");
                 return BadRequest(_response);
             }
-            var category = _mapper.Map<Category>(categoryCreateDTO);
-            await _unitOfWork.Category.CreateAsync(category);
+            var service = _mapper.Map<Service>(serviceCreateDTO);
+            await _unitOfWork.Service.CreateAsync(service);
             _response.StatusCode = HttpStatusCode.OK;
-            _response.Result = _mapper.Map<CategoryDTO>(category);
+            _response.Result = _mapper.Map<ServiceDTO>(service);
 
-            return CreatedAtRoute("GetCategory", new { id = category.Id }, _response);
+            return CreatedAtRoute("GetService", new { id = service.Id }, _response);
         }
-        [HttpPut("{id:int}", Name = "UpdateCategory")]
-        [Authorize(Roles = SD.Role_Admin)]
+        [HttpPut("{id:int}", Name = "UpdateService")]
+        //[Authorize(Roles = SD.Role_Admin)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> UpdateCategory(int id, [FromForm] CategoryUpdateDTO categoryUpdateDTO)
+        public async Task<ActionResult<APIResponse>> UpdateService(int id, [FromForm] ServiceUpdateDTO serviceUpdateDTO)
         {
-            if (id == 0 || categoryUpdateDTO == null)
+            if (id != serviceUpdateDTO.Id || serviceUpdateDTO == null)
             {
                 _response.StatusCode = HttpStatusCode.NotFound;
                 _response.IsSuccess = false;
                 _response.ErrorMessages.Add("Not Found");
                 return BadRequest();
             }
-            Category category = _mapper.Map<Category>(categoryUpdateDTO);
-            await _unitOfWork.Category.UpdateAsync(category);
+            Service service = _mapper.Map<Service>(serviceUpdateDTO);
+            await _unitOfWork.Service.UpdateAsync(service);
             _response.StatusCode = HttpStatusCode.NoContent;
             return Ok(_response);
         }
-        [HttpDelete("{id:int}", Name = "DeleteCategory")]
-        [Authorize(Roles = SD.Role_Admin)]
+        [HttpDelete("{id:int}", Name = "DeleteService")]
+        //[Authorize(Roles = SD.Role_Admin)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> DeleteCategory(int id)
+        public async Task<ActionResult<APIResponse>> DeleteService(int id)
         {
             if (id == 0)
             {
@@ -118,15 +121,15 @@ namespace QLKhachSan.Controllers
                 _response.ErrorMessages.Add("Id = 0 Ivalid");
                 return BadRequest();
             }
-            Category category = await _unitOfWork.Category.GetAsync(u => u.Id == id);
-            if (category == null)
+            Service service = await _unitOfWork.Service.GetAsync(u => u.Id == id);
+            if (service == null)
             {
                 _response.StatusCode = HttpStatusCode.NotFound;
                 _response.IsSuccess = false;
                 _response.ErrorMessages.Add("Not Found");
                 return NotFound();
             }
-            await _unitOfWork.Category.RemoveAsync(category);
+            await _unitOfWork.Service.RemoveAsync(service);
             _response.StatusCode = HttpStatusCode.NoContent;
             return Ok(_response);
         }

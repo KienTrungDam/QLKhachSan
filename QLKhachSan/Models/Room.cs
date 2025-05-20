@@ -7,19 +7,20 @@ namespace QLKhachSan.Models
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [ForeignKey("ResortId")]
-        public int ResortId { get; set; }
-        public Resort Resort { get; set; }
         [ForeignKey("CategoryRoomId")]
         public int CategoryRoomId { get; set; }
         public CategoryRoom CategoryRoom { get; set; }
+        public int RoomNumber { get; set; }
         public string Status { get; set; }
-
+        public int Floor { get; set; }
+        public int MaxOccupancy { get; set; }
+        public double RoomSize { get; set; }
         public double PriceDay { get; set; }
-        public double PriceHour { get; set; }
         public double PriceWeek { get; set; }
-        public double PriceMonth { get; set; }
-        
+        public string Description { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public IEnumerable<RoomImage> RoomImages { get; set; }
 
     }
 }

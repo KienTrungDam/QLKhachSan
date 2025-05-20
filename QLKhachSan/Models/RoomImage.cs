@@ -11,5 +11,6 @@ namespace QLKhachSan.Models
         public int RoomId { get; set; }
         [ForeignKey("RoomId")]
         public Room Room { get; set; }
+        public bool IsMain { get; set; } 
     }
 }

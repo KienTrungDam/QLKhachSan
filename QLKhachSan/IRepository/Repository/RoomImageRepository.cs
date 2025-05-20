@@ -4,16 +4,16 @@ using QLKhachSan.Repository.IRepository;
 
 namespace QLKhachSan.Repository
 {
-    public class ResortRepository : Repository<Resort>, IResortRepository
+    public class RoomImageRepository : Repository<RoomImage>, IRoomImageRepository
     {
         private readonly ApplicationDbContext _db;
-        public ResortRepository(ApplicationDbContext db) : base(db)
+        public RoomImageRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;
         }
-        public async Task<Resort> UpdateAsync(Resort entity)
+        public async Task<RoomImage> UpdateAsync(RoomImage entity)
         {
-            _db.Resorts.Update(entity);
+            _db.RoomImages.Update(entity);
             await _db.SaveChangesAsync();
             return entity;
         }

@@ -5,8 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using QLKhachSan.Data;
 using QLKhachSan.Models;
 using QLKhachSan.Models.DTO;
+using QLKhachSan.Repository.IRepository;
 using QLKhachSan.Utility;
-using SkyStoreAPI.Repository.IRepository;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
@@ -14,7 +14,7 @@ using System.Text;
 
 namespace QLKhachSan.Controllers
 {
-    [Route("api/auth")]
+    [Route("api/Auth")]
     [ApiController]
     public class AuthAPIController : ControllerBase
     {
@@ -38,6 +38,7 @@ namespace QLKhachSan.Controllers
         public async Task<ActionResult> Login([FromBody] LoginRequestDTO loginRequestDTO)
         {
             LoginResponseDTO loginResponseDTO = await _unitOfWork.User.LoginAsync(loginRequestDTO);
+            
             var user = _mapper.Map<Person>(loginResponseDTO.user);
             var role = await _userManager.GetRolesAsync(user);
 
@@ -71,6 +72,7 @@ namespace QLKhachSan.Controllers
                 //bool valid = _unitOfWork.User.UniqueUserName(registerRequestDTO.UserName);   
                 if (user == null)
                 {
+                    registerRequestDTO.Role = SD.Role_Customer;
                     PersonDTO userDTO = await _unitOfWork.User.RegisterAsync(registerRequestDTO);
                     if (userDTO == null)
                     {

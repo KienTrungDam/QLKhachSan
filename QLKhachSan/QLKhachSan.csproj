@@ -23,7 +23,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Service\" />
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="IRepository\Repository\BookingRepository.cs" />
   </ItemGroup>
 
 </Project>

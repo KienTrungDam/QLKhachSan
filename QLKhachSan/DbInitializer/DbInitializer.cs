@@ -5,7 +5,7 @@ using QLKhachSan.Models;
 using QLKhachSan.Utility;
 
 
-namespace SkyStoreAPI.DbInitializer
+namespace QLKhachSan.DbInitializer
 {
     public class DbInitializer
     {
