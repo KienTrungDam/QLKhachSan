@@ -10,5 +10,8 @@
         public const string Status_Room_Available = "Available ";
         public const string Status_BeingCleaned = "Being Cleaned";
 
+        public const string Status_Booking_Confirmed = "Confirmed";
+        public const string Status_Booking_Cancelled = "Cancelled";
+        public const string Status_Booking_Pending = "Pending";
     }
 }

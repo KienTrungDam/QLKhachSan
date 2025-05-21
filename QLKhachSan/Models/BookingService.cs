@@ -9,5 +9,6 @@ namespace QLKhachSan.Models
         public int Id { get; set; }
         public int ServiceCount { get; set; }
         public double ToTalPrice { get; set; }
+        public IEnumerable<BookingServiceDetail> BookingServiceDetails { get; set; }
     }
 }

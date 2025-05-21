@@ -28,6 +28,15 @@ namespace QLKhachSan
             CreateMap<CategoryRoom, CategoryRoomCreateDTO>().ReverseMap();
             CreateMap<CategoryRoom, CategoryRoomUpdateDTO>().ReverseMap();
 
+            CreateMap<Booking, BookingDTO>().ReverseMap();
+            CreateMap<Booking, BookingCreateDTO>().ReverseMap();
+            CreateMap<Booking, BookingUpdateDTO>().ReverseMap();
+
+            CreateMap<BookingService, BookingServiceUpdateDTO>().ReverseMap();
+            CreateMap<BookingService, BookingServiceCreateDTO>().ReverseMap();
+            CreateMap<BookingService, BookingServiceDTO>().ReverseMap();
+
+            CreateMap<BookingServiceDetail, BookingServiceDetailDTO>().ReverseMap();
         }
     }
 }

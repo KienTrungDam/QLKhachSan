@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QLKhachSan.Data;
 
@@ -11,9 +12,11 @@ using QLKhachSan.Data;
 namespace QLKhachSan.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250520120947_fixTable2")]
+    partial class fixTable2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -163,7 +166,7 @@ namespace QLKhachSan.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("BookingDate")
+                    b.Property<DateTime>("BookingDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("BookingServiceId")
@@ -173,13 +176,13 @@ namespace QLKhachSan.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("CheckInDate")
+                    b.Property<DateTime>("CheckInDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("CheckOutDate")
+                    b.Property<DateTime>("CheckOutDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("NumberOfGuests")
+                    b.Property<int>("NumberOfGuests")
                         .HasColumnType("int");
 
                     b.Property<string>("PersonId")
@@ -191,9 +194,6 @@ namespace QLKhachSan.Migrations
 
                     b.Property<double>("TotalPrice")
                         .HasColumnType("float");
-
-                    b.Property<DateTime>("UpdateBookingDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -235,6 +235,9 @@ namespace QLKhachSan.Migrations
 
                     b.Property<int>("BookingServiceId")
                         .HasColumnType("int");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -594,7 +597,7 @@ namespace QLKhachSan.Migrations
             modelBuilder.Entity("QLKhachSan.Models.BookingServiceDetail", b =>
                 {
                     b.HasOne("QLKhachSan.Models.BookingService", "BookingService")
-                        .WithMany("BookingServiceDetails")
+                        .WithMany()
                         .HasForeignKey("BookingServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -641,11 +644,6 @@ namespace QLKhachSan.Migrations
                         .IsRequired();
 
                     b.Navigation("Room");
-                });
-
-            modelBuilder.Entity("QLKhachSan.Models.BookingService", b =>
-                {
-                    b.Navigation("BookingServiceDetails");
                 });
 
             modelBuilder.Entity("QLKhachSan.Models.Room", b =>

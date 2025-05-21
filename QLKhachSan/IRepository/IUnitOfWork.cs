@@ -11,6 +11,11 @@ namespace QLKhachSan.Repository.IRepository
         IUserManagementRepository UserManagement { get; }
         IServiceRepository Service { get; }
         IRoomImageRepository RoomImage { get; }
+        IBookingRepository Booking { get; }
+        IBookingServiceDetailRepository BookingServiceDetail { get; }
+        IBookingServiceRepository BookingService { get; }
+        IPaymentRepository Payment { get; }
+
         Task SaveAsync();
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using QLKhachSan.Utility;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QLKhachSan.Models
 {
@@ -6,7 +7,7 @@ namespace QLKhachSan.Models
     {
         public int Id { get; set; }
         [ForeignKey("RoomId")]
-        public int RoomId { get; set; }
+        public int? RoomId { get; set; }
         public Room Room { get; set; }
         [ForeignKey("PersonId")]
         public string PersonId { get; set; }
@@ -16,9 +17,10 @@ namespace QLKhachSan.Models
         public BookingService BookingService { get; set; }
         public DateTime? CheckInDate { get; set; }
         public DateTime? CheckOutDate { get; set; }
-        public DateTime BookingDate { get; set; }
-        public double TotalPrice { get; set; }
-        public int NumberOfGuests { get; set; }
-        public string BookingStatus { get; set; } 
+        public DateTime? BookingDate { get; set; }
+        public DateTime UpdateBookingDate { get; set; }
+        public double TotalPrice { get; set; } = 1;
+        public int? NumberOfGuests { get; set; }
+        public string BookingStatus { get; set; } = SD.Status_Booking_Pending;
     }
 }
