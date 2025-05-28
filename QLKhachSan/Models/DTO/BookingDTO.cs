@@ -15,6 +15,8 @@ namespace QLKhachSan.Models.DTO
         public double TotalPrice { get; set; }
         public int? NumberOfGuests { get; set; }
         public string BookingStatus { get; set; }
+        public RoomDTO Room { get; set; }
+        public PersonDTO Person { get; set; }
         public BookingServiceDTO BookingService { get; set; }
     }
 }

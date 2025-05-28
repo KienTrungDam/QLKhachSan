@@ -10,5 +10,6 @@ namespace QLKhachSan.Models.DTO
         public int ServiceId { get; set; }
         [Required]
         public int Quantity { get; set; }
+        public ServiceDTO Service { get; set; }
     }
 }

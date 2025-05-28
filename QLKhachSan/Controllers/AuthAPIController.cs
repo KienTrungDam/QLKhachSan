@@ -28,7 +28,7 @@ namespace QLKhachSan.Controllers
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
-            _response = new();
+                _response = new();
             _userManager = userManager;
             _roleManager = roleManager;
         }

@@ -55,6 +55,7 @@ namespace QLKhachSan.Controllers
             _response.Result = _mapper.Map<BookingServiceDTO>(bookingService);
             return Ok(_response);
         }
+        
         [HttpPost]
 
         public async Task<ActionResult<APIResponse>> CreateBookingService(int serviceId, int quanlity)
@@ -75,7 +76,7 @@ namespace QLKhachSan.Controllers
                 _response.ErrorMessages.Add("Service item is not valid");
                 return BadRequest(_response);
             }
-            Booking booking = await _unitOfWork.Booking.GetAsync(u => u.PersonId == user.Id, includeProperties: "Room");
+            Booking booking = await _unitOfWork.Booking.GetAsync(u => u.PersonId == user.Id && u.BookingStatus == SD.Status_Booking_Pending, includeProperties: "Room");
             if (booking == null)
             {
                 // chua co booking
@@ -239,7 +240,7 @@ namespace QLKhachSan.Controllers
                 _response.ErrorMessages.Add("Service item is not valid");
                 return BadRequest(_response);
             }
-            Booking booking = await _unitOfWork.Booking.GetAsync(u => u.PersonId == user.Id, includeProperties: "Room");
+            Booking booking = await _unitOfWork.Booking.GetAsync(u => u.PersonId == user.Id && u.BookingStatus == SD.Status_Booking_Pending, includeProperties: "Room");
             if (booking == null)
             {
                 // chua co booking
@@ -382,7 +383,7 @@ namespace QLKhachSan.Controllers
             }
         }
         [HttpDelete]
-        public async Task<ActionResult<APIResponse>> DeleteBookingService(string userId, int bookingServiceDetailId)
+        public async Task<ActionResult<APIResponse>> DeleteBookingServiceDetail(string userId, int bookingServiceDetailId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
@@ -392,7 +393,7 @@ namespace QLKhachSan.Controllers
                 _response.ErrorMessages.Add("Invalid User ID");
                 return BadRequest(_response);
             }
-            Booking booking = await _unitOfWork.Booking.GetAsync(u => u.PersonId == userId);
+            Booking booking = await _unitOfWork.Booking.GetAsync(u => u.PersonId == userId, includeProperties: "Room");
             BookingService bookingService = await _unitOfWork.BookingService.GetAsync(u => u.Id == booking.Id);
             if (bookingService == null)
             {
@@ -417,7 +418,23 @@ namespace QLKhachSan.Controllers
                 bookingService.ServiceCount = bookingService.BookingServiceDetails.Count();
                 bookingService.ToTalPrice = bookingService.BookingServiceDetails.Sum(d => d.Quantity * d.Service.Price);
                 await _unitOfWork.BookingService.UpdateAsync(bookingService);
-
+                booking.UpdateBookingDate = DateTime.Now;
+                var days = (booking.CheckOutDate - booking.CheckInDate);
+                booking.TotalPrice = 0;
+                if (days.HasValue)
+                {
+                    int day = days.Value.Days;
+                    if (day >= 1 && day < 7)
+                    {
+                        booking.TotalPrice = booking.Room.PriceDay * day;
+                    }
+                    else
+                    {
+                        booking.TotalPrice = ((day / 7) * booking.Room.PriceWeek) + ((day % 7) * booking.Room.PriceDay);
+                    }
+                }
+                booking.TotalPrice += bookingService.ToTalPrice;
+                await _unitOfWork.Booking.UpdateAsync(booking);
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.Result = _mapper.Map<BookingServiceDTO>(bookingService);
                 return Ok(_response);

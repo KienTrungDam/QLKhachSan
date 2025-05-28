@@ -264,6 +264,49 @@ namespace QLKhachSan.Controllers
 
             await _unitOfWork.SaveAsync();
         }
+        [HttpGet("available")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<APIResponse>> GetAvailableRooms(DateTime checkin, DateTime checkout, int people)
+        {
+            DateTime checkinDate = checkin.Date;
+            DateTime checkoutDate = checkout.Date;
+
+            if (checkinDate >= checkoutDate || people <= 0)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Ngày check-out phải sau ngày check-in và số người phải lớn hơn 0.");
+                return BadRequest(_response);
+            }
+
+            // Lấy các phòng đủ số người
+            var allRooms = await _unitOfWork.Room.GetAllAsync(
+                r => r.MaxOccupancy >= people,
+                includeProperties: "CategoryRoom,RoomImages"
+            );
+
+            // Lấy các booking có giao nhau với khoảng thời gian checkin-checkout, loại bỏ những booking đã cancel
+            var overlappingBookings = await _unitOfWork.Booking.GetAllAsync(b =>
+                b.BookingStatus != SD.Status_Booking_Cancelled &&
+                b.CheckInDate.HasValue && b.CheckOutDate.HasValue &&
+                !(b.CheckOutDate.Value.Date <= checkinDate || b.CheckInDate.Value.Date >= checkoutDate)
+            );
+
+
+            // Lấy danh sách phòng đã được đặt trong khoảng thời gian
+            var bookedRoomIds = overlappingBookings.Select(b => b.RoomId).Distinct().ToList();
+
+            // Chọn các phòng không nằm trong danh sách bị đặt
+            var availableRooms = allRooms.Where(r => !bookedRoomIds.Contains(r.Id));
+
+            _response.StatusCode = HttpStatusCode.OK;
+            _response.Result = _mapper.Map<IEnumerable<RoomDTO>>(availableRooms);
+            return Ok(_response);
+        }
+
+
+
     }
 
 }

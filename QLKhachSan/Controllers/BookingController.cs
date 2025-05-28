@@ -31,7 +31,7 @@ namespace QLKhachSan.Controllers
             try
             {
                 var user = await _userManager.GetUserAsync(User);
-                IEnumerable<Booking> bookings = await _unitOfWork.Booking.GetAllAsync();
+                IEnumerable<Booking> bookings = await _unitOfWork.Booking.GetAllAsync(includeProperties: "Room,BookingService,Person");
                 bookings = bookings.OrderByDescending(item => item.Id);
 
                 bool isAdmin = await _userManager.IsInRoleAsync(user, SD.Role_Admin);
@@ -65,7 +65,7 @@ namespace QLKhachSan.Controllers
                 {
                     throw new Exception("Id is not valid");
                 }
-                Booking booking = await _unitOfWork.Booking.GetAsync(u => u.Id == id);
+                Booking booking = await _unitOfWork.Booking.GetAsync(u => u.Id == id, includeProperties: "BookingService");
                 if (booking == null)
                 {
                     throw new Exception("Not found");
@@ -100,7 +100,7 @@ namespace QLKhachSan.Controllers
             {
                 var user = await _userManager.GetUserAsync(User);
                 Booking booking = await _unitOfWork.Booking.GetAsync(u => u.PersonId == user.Id && u.BookingStatus == SD.Status_Booking_Pending, includeProperties: "BookingService");
-                if(booking != null)
+                if (booking != null)
                 {
                     // da tao booking tu them service truoc
                     var room = await _unitOfWork.Room.GetAsync(u => u.Id == bookingDTO.RoomId);
@@ -166,6 +166,114 @@ namespace QLKhachSan.Controllers
                     _response.StatusCode = HttpStatusCode.Created;
                     return CreatedAtRoute("GetBooking", new { id = newBooking.Id }, _response);
                 }
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add(ex.Message);
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                return BadRequest(_response);
+            }
+        }
+        [HttpPut]
+        public async Task<ActionResult<APIResponse>> UpdateBooking([FromForm] BookingUpdateDTO bookingUpdateDTO)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                Booking booking = await _unitOfWork.Booking.GetAsync(u => u.PersonId == user.Id && u.BookingStatus == SD.Status_Booking_Pending, includeProperties: "BookingService");
+                if (booking != null)
+                {
+                    // da tao booking tu them service truoc
+                    var room = await _unitOfWork.Room.GetAsync(u => u.Id == bookingUpdateDTO.RoomId);
+                    if (room == null)
+                    {
+                        _response.StatusCode = HttpStatusCode.NotFound;
+                        _response.IsSuccess = false;
+                        _response.ErrorMessages.Add("Not Found Room");
+                        return NotFound(_response);
+                    }
+                    var days = (bookingUpdateDTO.CheckOutDate - bookingUpdateDTO.CheckInDate);
+                    if (days.HasValue)
+                    {
+                        int day = days.Value.Days;
+                        if (day >= 1 && day < 7)
+                        {
+                            booking.TotalPrice = (room.PriceDay * day) + booking.BookingService.ToTalPrice;
+                        }
+                        else
+                        {
+                            booking.TotalPrice = (((day / 7) * room.PriceWeek) + ((day % 7) * room.PriceDay)) + booking.BookingService.ToTalPrice;
+                        }
+                    }
+                    booking.CheckInDate = bookingUpdateDTO.CheckInDate;
+                    booking.CheckOutDate = bookingUpdateDTO.CheckOutDate;
+                    booking.BookingDate = DateTime.Now;
+                    booking.UpdateBookingDate = DateTime.Now;
+                    booking.NumberOfGuests = bookingUpdateDTO.NumberOfGuests;
+                    booking.RoomId = bookingUpdateDTO.RoomId;
+                    await _unitOfWork.Booking.UpdateAsync(booking);
+                    _response.Result = _mapper.Map<BookingDTO>(booking);
+                    _response.StatusCode = HttpStatusCode.Created;
+                    return CreatedAtRoute("GetBooking", new { id = booking.Id }, _response);
+                }
+                else
+                {
+                    Booking newBooking = _mapper.Map<Booking>(bookingUpdateDTO);
+                    var room = await _unitOfWork.Room.GetAsync(u => u.Id == bookingUpdateDTO.RoomId);
+                    if (room == null)
+                    {
+                        _response.StatusCode = HttpStatusCode.NotFound;
+                        _response.IsSuccess = false;
+                        _response.ErrorMessages.Add("Not Found Room");
+                        return NotFound(_response);
+                    }
+                    newBooking.PersonId = user.Id;
+                    var days = (bookingUpdateDTO.CheckOutDate - bookingUpdateDTO.CheckInDate);
+                    if (days.HasValue)
+                    {
+                        int day = days.Value.Days;
+                        if (day >= 1 && day < 7)
+                        {
+                            newBooking.TotalPrice = room.PriceDay * day;
+                        }
+                        else
+                        {
+                            newBooking.TotalPrice = ((day / 7) * room.PriceWeek) + ((day % 7) * room.PriceDay);
+                        }
+                    }
+                    newBooking.UpdateBookingDate = DateTime.Now;
+                    await _unitOfWork.Booking.CreateAsync(newBooking);
+                    _response.Result = _mapper.Map<BookingDTO>(newBooking);
+                    _response.StatusCode = HttpStatusCode.Created;
+                    return CreatedAtRoute("GetBooking", new { id = newBooking.Id }, _response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add(ex.Message);
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                return BadRequest(_response);
+            }
+        }
+        [HttpDelete]
+        public async Task<ActionResult<APIResponse>> DeleteBooking(string userId, int bookingId)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                Booking booking = await _unitOfWork.Booking.GetAsync(u => u.Id == bookingId && u.PersonId == userId);
+                if (booking == null)
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("Not Found");
+                    return NotFound(_response);
+                }
+                await _unitOfWork.Booking.RemoveAsync(booking);
+                _response.StatusCode = HttpStatusCode.NoContent;
+                return Ok(_response);
             }
             catch (Exception ex)
             {
